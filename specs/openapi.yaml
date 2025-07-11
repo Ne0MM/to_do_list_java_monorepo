@@ -1,0 +1,29 @@
+# Use a modern version of the OpenAPI Specification
+openapi: 3.1.0
+
+# The 'info' block contains basic information about your API
+info:
+  title: To-Do List Java API
+  version: 1.0.0
+  description: This is the official API documentation for my project.
+  contact:
+    name: API Support
+    email: support@example.com
+
+# The 'servers' block lists the base URLs for your API
+servers:
+  - url: http://localhost:8080/v1
+    description: Development server
+
+# The 'paths' block is where you will define all your endpoints
+paths:
+  # Your endpoints will go here...
+  /health:
+    get:
+      summary: Health Check
+      description: Returns a 200 OK status if the API is running.
+      tags:
+        - Monitoring
+      responses:
+        '200':
+          description: API is healthy.

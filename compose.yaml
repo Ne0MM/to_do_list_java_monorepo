@@ -1,0 +1,45 @@
+services:
+  documentation:
+    container_name: to_do_list_java_documentation
+    build:
+      context: ./
+      dockerfile: documentation/Dockerfile
+    ports:
+      - "8001:80"
+    develop:
+      watch:
+        - path: ./specs/openapi.yaml
+          action: rebuild
+  db:
+    container_name: to_do_list_java_db
+    image: postgres:16
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: to_do_list_java_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - to_do_list_java_db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "root", "-d", "to_do_list_java_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  backend:
+    container_name: to_do_list_java
+    environment:
+      JWT_SECRET_KEY: "TEST_SECRET_KEY"
+    build:
+      context: ./to_do_list_java
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+      - "5005:5005" #Debug port
+    volumes:
+      - /to_do_list_java:/build
+    depends_on:
+      db:
+        condition: service_healthy
+volumes:
+  to_do_list_java_db:
