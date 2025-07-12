@@ -22,7 +22,7 @@ import com.to_do_list_java.to_do_list_java.services.AppUserService;
 import com.to_do_list_java.to_do_list_java.services.TokenService;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class AuthenticationController 
 {
 
@@ -58,7 +58,7 @@ public class AuthenticationController
 
             LoginResponseDTO loginResponse = new LoginResponseDTO("Login successful", token);
 
-            return ResponseEntity.ok(ApiResponse.success(loginResponse));
+            return ResponseEntity.status(200).body(ApiResponse.success(loginResponse));
         }catch (Exception e) 
         {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
@@ -107,7 +107,7 @@ public class AuthenticationController
 
             ApiResponse<SignUpResponseDTO> apiResponse = ApiResponse.success(response);
 
-            return ResponseEntity.ok(apiResponse);
+            return ResponseEntity.status(201).body(apiResponse);
         }catch (Exception e)
         {
             return ResponseEntity.internalServerError()

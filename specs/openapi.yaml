@@ -12,18 +12,201 @@ info:
 
 # The 'servers' block lists the base URLs for your API
 servers:
-  - url: http://localhost:8080/v1
-    description: Development server
+  - url: http://localhost:8080/api
+    description: Using localhost for development
 
 # The 'paths' block is where you will define all your endpoints
 paths:
-  # Your endpoints will go here...
-  /health:
-    get:
-      summary: Health Check
-      description: Returns a 200 OK status if the API is running.
+  /auth/login:
+    post:
+      summary: User login
+      description: Authenticate a User and return a JWT token.
       tags:
-        - Monitoring
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequestDTO'
       responses:
         '200':
-          description: API is healthy.
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        description: a message indicating the result of the login operation.
+                        example: "login successful"
+                      token:
+                        type: string
+                        description: The JWT token returned upon successful login.
+                        example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        '401':
+          description: Unauthorized - Invalid credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: integer
+                        description: Error code representing the type of error.
+                        example: 401
+                        required: true
+                      message:
+                        type: string
+                        description: Descriptive error message.
+                        example: "Invalid login or password."
+                        required: true
+  /auth/sign-up:
+    post:
+      summary: User registration
+      description: Register a new user in the system.
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignUpRequestDTO'
+      responses:
+        '201':
+          description: User successfully registered
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        description: Confirmation message for successful registration
+                        example: "User created successfully"
+                      token:
+                        type: string
+                        description: JWT token for the newly registered user
+                        example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        '400':
+          description: Bad Request - Validation errors
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: integer
+                        description: Error code representing the type of error
+                        example: 400
+                      message:
+                        type: string
+                        description: Error message indicating the validation issue
+                        example: "Password and confirm password do not match."
+        '401':
+          description: Unauthorized - Invalid credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    properties:
+                      code:
+                        type: integer
+                        description: Error code representing the type of error.
+                        example: 401
+                        required: true
+                      message:
+                        type: string
+                        description: Descriptive error message.
+                        example: "Invalid login or password."
+                        required: true
+components:
+  schemas:
+    ApiResponse:
+      type: object
+      properties:
+        data:
+          description: Data returned by the API, if any.
+          type: object 
+          nullable: true 
+        error:
+          $ref: '#/components/schemas/ErrorResponse' 
+          nullable: true 
+
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Error code representing the type of error.
+          example: 401
+          required: true
+        message:
+          type: string
+          description: Descriptive error message.
+          example: "Invalid login or password."
+          required: true
+        errors:
+          description: Additional details about the errors, such as field validation errors.
+          type: object
+          nullable: true
+
+    LoginRequestDTO:
+      type: object
+      properties:
+        login:
+          type: string
+          description: The user's login (email or username).
+          example: "mockuser"
+          minLength: 1
+          maxLength: 36
+          required: true
+        password:
+          type: string
+          description: The user's password.
+          example: "mockpassword"
+          minLength: 8
+          required: true
+
+    SignUpRequestDTO:
+      type: object
+      properties:
+        login:
+          type: string
+          description: The login of the newly registered user.
+          example: "mockuser"
+          required: true
+          minLength: 1
+          maxLength: 36
+        password:
+          type: string
+          description: The password of the newly registered user.
+          example: "mockpassword"
+          required: true
+          minLength: 8
+        confirmPassword:
+          type: string
+          description: Confirmation of the password.
+          example: "mockpassword"
+          required: true
+          minLength: 8
+      required:
+        - login
+        - password
+        - confirmPassword

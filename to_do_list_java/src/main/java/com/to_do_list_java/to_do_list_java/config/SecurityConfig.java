@@ -19,9 +19,9 @@ public class SecurityConfig
 {
 
     private static final String[] PUBLIC_PATHS = {
-        "/", 
-        "/auth/login", 
-        "/auth/sign-up"
+        "/api/", 
+        "/api/auth/login", 
+        "/api/auth/sign-up"
     };
 
     private static final String[] USER_PATHS = {
