@@ -1,6 +1,7 @@
 package com.to_do_list_java.to_do_list_java.models;
 
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 import org.hibernate.annotations.ColumnDefault;
 
@@ -9,6 +10,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
 @Entity
@@ -63,7 +65,95 @@ public class TaskList
     private OffsetDateTime updatedAt;
 
     // Getters and Setters
-    TaskList()
+    public TaskList()
     {
+    }
+
+    public TaskList withAppUserId(Long appUserId) 
+    {
+        this.appUserId = appUserId;
+        return this;
+    }
+
+    public TaskList withTitle(String title) 
+    {
+        this.title = title;
+        return this;
+    }
+
+    public TaskList withDescription(String description) 
+    {
+        this.description = description;
+        return this;
+    }
+
+    public TaskList withIsCompleted(Boolean isCompleted) 
+    {
+        this.isCompleted = isCompleted;
+        return this;
+    }
+
+    public TaskList withIsActive(Boolean isActive) 
+    {
+        this.isActive = isActive;
+        return this;
+    }
+
+    public TaskList withCreatedAt(OffsetDateTime createdAt) 
+    {
+        this.createdAt = createdAt;
+        return this;
+    }
+
+    public TaskList withUpdatedAt(OffsetDateTime updatedAt) 
+    {
+        this.updatedAt = updatedAt;
+        return this;
+    }
+
+    public TaskList withAllRequiredFields(
+        AppUser appUser,
+        String title
+    )
+    {
+        return this.withAppUserId(appUser.getId())
+            .withTitle(title)
+            .withIsCompleted(false)
+            .withIsActive(true);
+    }
+
+    @PreUpdate
+    public void preUpdate() 
+    {
+        this.updatedAt = OffsetDateTime.now(ZoneOffset.UTC);
+    }
+
+    public Long getId() 
+    {
+        return id;
+    }
+    public Long getAppUserId() 
+    {
+        return appUserId;
+    }
+
+    public String getTitle() 
+    {        
+        return title;
+    }
+
+    public String getDescription() 
+    {
+        return description;
+    }
+
+    public Boolean getIsCompleted() 
+    {
+        return isCompleted;
+    }
+
+    public Boolean getIsActive() 
+    {
+        return isActive;
     }
 }

@@ -1,7 +1,7 @@
 CREATE TABLE task_lists (
     id BIGSERIAL PRIMARY KEY,
     app_user_id BIGINT NOT NULL ,
-    title VARCHAR(255) NOT NULL,
+    title VARCHAR(100) NOT NULL,
     description TEXT,
     is_completed BOOLEAN NOT NULL DEFAULT FALSE,
     is_active BOOLEAN NOT NULL DEFAULT TRUE,
