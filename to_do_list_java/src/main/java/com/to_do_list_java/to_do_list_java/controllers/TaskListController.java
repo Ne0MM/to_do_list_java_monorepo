@@ -34,13 +34,13 @@ public class TaskListController
     }
 
     @GetMapping("")
-    public ResponseEntity<ApiResponse<GetTaskListRequestDTO>> getAllTaskLists(
+    public ResponseEntity<ApiResponse<GetTaskListRequestDTO>> getActiveTaskLists(
         @AuthenticationPrincipal AppUser appUser
     )
     {
         try 
         {
-            List<TaskList> taskLists = taskListService.getAllTaskLists(appUser);
+            List<TaskList> taskLists = taskListService.getAllActiveTaskLists(appUser);
 
             List<TaskListDTO> taskListDTOs = taskLists.stream()
                 .map(TaskListDTO::fromEntity)
@@ -55,6 +55,31 @@ public class TaskListController
         {
             return ResponseEntity.status(500)
                 .body(ApiResponse.error(500, "An error occurred while fetching task lists"));
+        }
+    }
+
+    @GetMapping("/inactive")
+    public ResponseEntity<ApiResponse<GetTaskListRequestDTO>> getInactiveTaskLists(
+        @AuthenticationPrincipal AppUser appUser
+    )
+    {
+        try 
+        {
+            List<TaskList> taskLists = taskListService.getAllInactiveTaskLists(appUser);
+
+            List<TaskListDTO> taskListDTOs = taskLists.stream()
+                .map(TaskListDTO::fromEntity)
+                .toList();
+
+            GetTaskListRequestDTO response = GetTaskListRequestDTO.fromEntity(taskListDTOs);
+
+            ApiResponse<GetTaskListRequestDTO> apiResponse = ApiResponse.success(response);
+
+            return ResponseEntity.status(200).body(apiResponse);
+        } catch (Exception e) 
+        {
+            return ResponseEntity.status(500)
+                .body(ApiResponse.error(500, "An error occurred while fetching inactive task lists"));
         }
     }
 

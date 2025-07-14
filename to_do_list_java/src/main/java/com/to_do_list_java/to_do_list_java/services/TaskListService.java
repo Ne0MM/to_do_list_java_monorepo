@@ -30,10 +30,18 @@ public class TaskListService
     }
 
     @Transactional
-    public List<TaskList> getAllTaskLists(AppUser appUser)
+    public List<TaskList> getAllActiveTaskLists(AppUser appUser)
     {
 
-        List<TaskList> taskLists = taskListRepository.findByAppUserId(appUser.getId());
+        List<TaskList> taskLists = taskListRepository.findByAppUserIdAndIsActiveTrue(appUser.getId());
+
+        return taskLists;
+    }
+
+    @Transactional
+    public List<TaskList> getAllInactiveTaskLists(AppUser appUser)
+    {
+        List<TaskList> taskLists = taskListRepository.findByAppUserIdAndIsActiveFalse(appUser.getId());
 
         return taskLists;
     }

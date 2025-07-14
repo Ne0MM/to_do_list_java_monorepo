@@ -9,6 +9,8 @@ import com.to_do_list_java.to_do_list_java.models.TaskList;
 public interface TaskListRepository extends JpaRepository<TaskList, Long>
 {
 
-    List<TaskList> findByAppUserId(Long appUserId);
+    List<TaskList> findByAppUserIdAndIsActiveTrue(Long appUserId);
+
+    List<TaskList> findByAppUserIdAndIsActiveFalse(Long appUserId);
 
 }
