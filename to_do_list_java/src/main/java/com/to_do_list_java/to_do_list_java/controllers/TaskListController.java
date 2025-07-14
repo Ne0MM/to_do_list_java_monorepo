@@ -36,9 +36,9 @@ public class TaskListController
     {
         try{
 
-            TaskList taskList = taskListService.createTaskList(data, appUser);
+            TaskList newTaskList = taskListService.createTaskList(data, appUser);
 
-            CreateTaskListResponseDTO response = CreateTaskListResponseDTO.fromEntity(taskList);
+            CreateTaskListResponseDTO response = CreateTaskListResponseDTO.fromEntity(newTaskList);
 
             ApiResponse<CreateTaskListResponseDTO> apiResponse = ApiResponse.success(response);
 

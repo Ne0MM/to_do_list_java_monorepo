@@ -9,15 +9,16 @@ import com.to_do_list_java.to_do_list_java.repositories.TaskListRepository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 
 @Service
 public class TaskListService 
 {
 
-    private final TaskListRepository taskListRepository;
+    private TaskListRepository taskListRepository;
 
     @PersistenceContext
-    EntityManager entityManager;
+    private EntityManager entityManager;
 
     public TaskListService(
         TaskListRepository taskListRepository
@@ -26,6 +27,7 @@ public class TaskListService
         this.taskListRepository = taskListRepository;
     }
 
+    @Transactional
     public TaskList createTaskList(
         CreateTaskListRequestDTO data,
         AppUser appUser
