@@ -1,5 +1,7 @@
 package com.to_do_list_java.to_do_list_java.services;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.to_do_list_java.to_do_list_java.dtos.task_list.CreateTaskListRequestDTO;
@@ -25,6 +27,15 @@ public class TaskListService
     ) 
     {
         this.taskListRepository = taskListRepository;
+    }
+
+    @Transactional
+    public List<TaskList> getAllTaskLists(AppUser appUser)
+    {
+
+        List<TaskList> taskLists = taskListRepository.findByAppUserId(appUser.getId());
+
+        return taskLists;
     }
 
     @Transactional
