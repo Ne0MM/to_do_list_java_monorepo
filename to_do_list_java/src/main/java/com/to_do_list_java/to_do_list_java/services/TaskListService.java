@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.to_do_list_java.to_do_list_java.dtos.task_list.CreateTaskListRequestDTO;
+import com.to_do_list_java.to_do_list_java.dtos.task_list.UpdateTaskListRequestDTO;
 import com.to_do_list_java.to_do_list_java.models.AppUser;
 import com.to_do_list_java.to_do_list_java.models.TaskList;
 import com.to_do_list_java.to_do_list_java.repositories.TaskListRepository;
@@ -52,25 +53,96 @@ public class TaskListService
         AppUser appUser
     )
     {
+        // Create a new TaskList with all required fields
         TaskList taskList = new TaskList().withAllRequiredFields(
             appUser, 
             data.title()
         );
 
-        if(data.description() != null) {
-            taskList.withDescription(data.description());
-        }
+        // Update optional fields if provided
+        updateDescription(taskList, data.description());
 
+        // Save the new task list
         TaskList newTaskList = taskListRepository.save(taskList);
 
         // Ensure the entity is persisted and refreshed
-        // This is necessary to retrieve the timestamp values correctly
-
-        // This is necessary to ensure the entity is persisted and refreshed
-        // it ensures that the constraints are applied and the entity is in a valid state
-        entityManager.flush(); // Ensure the entity is persisted immediately
-        entityManager.refresh(newTaskList); // Refresh to get the latest state
+        refreshTaskList(newTaskList);
 
         return newTaskList;
+    }
+
+    @Transactional
+    public TaskList updateTaskList(
+        Long taskListId,
+        UpdateTaskListRequestDTO data,
+        AppUser appUser
+    )
+    {
+        // Check if the task list exists and belongs to the user
+        TaskList taskList = taskListRepository.findById(taskListId)
+            .orElseThrow(() -> new RuntimeException("Task list not found"));
+
+        if(!taskList.getAppUserId().equals(appUser.getId())) 
+        {
+            throw new RuntimeException("You do not have permission to update this task list");
+        }
+
+        // Update fields using helper methods
+        updateTitle(taskList, data.title());
+        updateDescription(taskList, data.description());
+        updateActiveStatus(taskList, data.isActive());
+        updateCompletedStatus(taskList, data.isCompleted());
+
+        // Save the updated task list
+        TaskList updatedTaskList = taskListRepository.save(taskList);
+
+        // Refresh the task list to ensure the latest state is retrieved
+        refreshTaskList(updatedTaskList);
+
+        return updatedTaskList;
+    }
+
+    // Ensure the entity is persisted and refreshed
+    // This is necessary to retrieve the timestamp values correctly
+    private void refreshTaskList(TaskList taskList) 
+    {
+        entityManager.flush(); // Ensure the entity is persisted immediately
+        entityManager.refresh(taskList); // Refresh to get the latest state
+    }
+
+    // Helper methods for updating fields with validation
+    private void updateTitle(TaskList taskList, String title) 
+    {
+        if (title != null && !title.isBlank()) 
+        {
+            taskList.withTitle(title);
+        }
+    }
+
+    private void updateDescription(TaskList taskList, String description) 
+    {
+        if (description != null) 
+        {
+            taskList.withDescription(description);
+        } else
+        {
+            taskList.withDescription(null);
+        }
+    }
+
+    private void updateActiveStatus(TaskList taskList, Boolean isActive) 
+    {
+        if (isActive != null) 
+        {
+            taskList.withIsActive(isActive);
+        }
+    }
+
+    private void updateCompletedStatus(TaskList taskList, Boolean isCompleted) 
+    {
+        if (isCompleted != null) 
+        {
+            taskList.withIsCompleted(isCompleted);
+        }
     }
 }

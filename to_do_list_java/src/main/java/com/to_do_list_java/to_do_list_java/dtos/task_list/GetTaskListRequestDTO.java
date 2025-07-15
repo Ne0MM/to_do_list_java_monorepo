@@ -10,7 +10,7 @@ public record GetTaskListRequestDTO
 )
 {
 
-    public static GetTaskListRequestDTO fromEntity(List<TaskListDTO> taskLists)
+    public static GetTaskListRequestDTO fromTaskListsDTO(List<TaskListDTO> taskLists)
     {
         return new GetTaskListRequestDTO(
             "Fetched task lists successfully",

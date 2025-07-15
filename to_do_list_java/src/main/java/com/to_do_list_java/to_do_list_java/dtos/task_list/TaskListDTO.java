@@ -12,7 +12,8 @@ public record TaskListDTO
 ) 
 {
 
-    public static TaskListDTO fromEntity(TaskList taskList) {
+    public static TaskListDTO fromEntity(TaskList taskList) 
+    {
         return new TaskListDTO(
             taskList.getId(),
             taskList.getTitle(),
