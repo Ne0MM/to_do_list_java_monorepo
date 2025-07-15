@@ -25,7 +25,7 @@ public class SecurityConfig
     };
 
     private static final String[] USER_PATHS = {
-        "/", 
+        "/api/task-lists/**", 
     };
 
     private final SecurityFilter securityFilter;

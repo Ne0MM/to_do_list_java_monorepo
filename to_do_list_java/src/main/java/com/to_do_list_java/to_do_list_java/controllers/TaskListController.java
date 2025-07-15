@@ -120,7 +120,19 @@ public class TaskListController
     {
         try 
         {
-            TaskList updatedTaskList = taskListService.updateTaskList(taskListId, data, appUser);
+
+            TaskList updatedTaskList;
+
+            // This handles the case where the task list is not found
+            // or does not belong to the user
+            try
+            {
+                updatedTaskList = taskListService.updateTaskList(taskListId, data, appUser);
+            } catch (Exception e)
+            {
+                return ResponseEntity.status(404)
+                    .body(ApiResponse.error(404, e.getMessage()));
+            }
 
             TaskListDTO updatedTaskListDTO = TaskListDTO.fromEntity(updatedTaskList);
 
