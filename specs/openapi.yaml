@@ -136,6 +136,365 @@ paths:
                         description: Descriptive error message.
                         example: "Invalid login or password."
                         required: true
+  /task-lists:
+    get:
+      summary: Get all task lists
+      description: Retrieve all the active task lists for the authenticated user.
+      tags:
+        - Task Lists
+      responses:
+        '200':
+          description: Successful retrieval of task lists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        description: Message indicating successful retrieval
+                        example: "Fetched task lists successfully"
+                      count:
+                        type: integer
+                        description: Number of task lists returned
+                        example: 2
+                      taskLists:
+                        type: array
+                        description: List of task lists for the user
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              description: Unique identifier for the task list
+                              example: 12345
+                            title:
+                              type: string
+                              description: Title of the task list
+                              example: "My Tasks"
+                            description:
+                              type: string
+                              description: Description of the task list
+                              example: "Tasks to be completed this week"
+                              nullable: true
+                            isActive:
+                              type: boolean
+                              description: Indicates if the task list is active
+                            isCompleted:
+                              type: boolean
+                              description: Indicates if the task list is completed
+                        example:
+                          - id: 12345
+                            title: "My Tasks"
+                            description: "Tasks to be completed this week"
+                            isActive: true
+                            isCompleted: false
+                          - id: 67890
+                            title: "Shopping List"
+                            description: null
+                            isActive: true
+                            isCompleted: true
+        '500':
+          description: Internal Server Error - An unexpected error occurred
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: integer
+                        description: Error code representing the type of error.
+                        example: 500
+                        required: true
+                      message:
+                        type: string
+                        description: Descriptive error message.
+                        example: "An error occurred while fetching task lists"
+                        required: true
+    post:
+      summary: Create a new task list
+      description: Create a new task list for the authenticated user.
+      tags:
+        - Task Lists
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: Title of the task list
+                  example: "New Task List"
+                  minLength: 1
+                  maxLength: 100
+                  required: true
+                description:
+                  type: string
+                  description: Description of the task list (optional)
+                  example: "Tasks to be completed this month"
+                  maxLength: 500
+                  nullable: true
+      responses:
+        '201':
+          description: Task list created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        description: Confirmation message for successful creation
+                        example: "Task list created successfully"
+                      taskList:
+                        type: object
+                        description: newly created task list
+                        properties:
+                          id:
+                            type: integer
+                            description: ID of the newly created task list
+                            example: 12345
+                          title:
+                            type: string
+                            description: Title of the task list
+                            example: "New Task List"
+                          description:
+                            type: string
+                            description: Description of the task list (optional)
+                            example: "Tasks to be completed this month"
+                            nullable: true
+                          isActive:
+                            type: boolean
+                            description: Indicates if the task list is active
+                          isCompleted:
+                            type: boolean
+                            description: Indicates if the task list is completed
+        '400':
+          description: Bad Request - Validation errors
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: integer
+                        description: Error code representing the type of error.
+                        example: 400
+                      message:
+                        type: string
+                        description: Error message indicating the validation issue.
+                        example: "Title is required."
+  /task-lists/inactive:
+    get:
+      summary: Get inactive task lists
+      description: Retrieve all the inactive task lists for the authenticated user.
+      tags:
+        - Task Lists
+      responses:
+        '200':
+          description: Successful retrieval of task lists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        description: Message indicating successful retrieval
+                        example: "Fetched task lists successfully"
+                      count:
+                        type: integer
+                        description: Number of inactive task lists returned
+                        example: 1
+                      taskLists:
+                        type: array
+                        description: List of inactive task lists for the user
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              description: Unique identifier for the task list
+                              example: 12345
+                            title:
+                              type: string
+                              description: Title of the task list
+                              example: "Archived Tasks"
+                            isActive:
+                              type: boolean
+                              description: Indicates if the task list is active
+                            isCompleted:
+                              type: boolean
+                              description: Indicates if the task list is completed
+                        example:
+                          - id: 12345
+                            title: "Archived Tasks"
+                            isActive: false
+                            isCompleted: true
+        '500':
+          description: Internal Server Error - An unexpected error occurred
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: integer
+                        description: Error code representing the type of error.
+                        example: 500
+                        required: true
+                      message:
+                        type: string
+                        description: Descriptive error message.
+                        example: "An error occurred while fetching task lists"
+                        required: true
+  /task-lists/{taskListId}:  
+    put:
+      summary: Update a task list
+      description: Update an existing task list for the authenticated user.
+      tags:
+        - Task Lists
+      parameters:
+        - name: taskListId
+          in: path
+          required: true
+          description: ID of the task list to update
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: Title of the task list
+                  example: "Updated Task List"
+                  minLength: 1
+                  maxLength: 100
+                  nullable: true
+                description:
+                  type: string
+                  description: Description of the task list (optional)
+                  example: "Updated tasks to be completed this month"
+                  maxLength: 500
+                  nullable: true
+                isActive:
+                  type: boolean
+                  description: Indicates if the task list is active
+                  nullable: true
+                isCompleted:
+                  type: boolean
+                  description: Indicates if the task list is completed
+                  nullable: true
+      responses:
+        '200':
+          description: Task list updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        description: Confirmation message for successful update
+                        example: "Task list updated successfully"
+                      taskList:
+                        type: object
+                        description: Updated task list
+                        properties:
+                          id:
+                            type: integer
+                            description: ID of the updated task list
+                            example: 12345
+                          title:
+                            type: string
+                            description: Title of the task list
+                            example: "Updated Task List"
+                          description:
+                            type: string
+                            description: Description of the task list (optional)
+                            example: "Updated tasks to be completed this month"
+                            nullable: true
+                          isActive:
+                            type: boolean
+                            description: Indicates if the task list is active
+                          isCompleted:
+                            type: boolean
+                            description: Indicates if the task list is completed
+                example:
+                  data:
+                    message: "Task list updated successfully"
+                    taskList:
+                      id: 12345
+                      title: "Updated Task List"
+                      description: "Updated tasks to be completed this month"
+                      isActive: true
+                      isCompleted: false
+        '404':
+          description: Not Found - Task list not found  
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: integer
+                        description: Error code representing the type of error.
+                        example: 404
+                      message:
+                        type: string
+                        description: Descriptive error message.
+                        example: "Task list not found."
+                        required: true
+        '500':
+          description: Internal Server Error - An unexpected error occurred
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: integer
+                        description: Error code representing the type of error.
+                        example: 500
+                        required: true
+                      message:
+                        type: string
+                        description: Descriptive error message.
+                        example: "An error occurred while updating the task list"
+                        required: true
 components:
   schemas:
     ApiResponse:
