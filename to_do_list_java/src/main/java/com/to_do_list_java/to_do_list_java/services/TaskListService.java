@@ -123,11 +123,14 @@ public class TaskListService
     {
         if (description != null) 
         {
-            taskList.withDescription(description);
-        } else
-        {
-            taskList.withDescription(null);
-        }
+            if(description.isBlank()) 
+            {
+                taskList.withDescription(null);
+            } else
+            {
+                taskList.withDescription(description);
+            }
+        } 
     }
 
     private void updateActiveStatus(TaskList taskList, Boolean isActive) 
