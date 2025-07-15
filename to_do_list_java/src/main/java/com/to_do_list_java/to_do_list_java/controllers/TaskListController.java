@@ -103,7 +103,8 @@ public class TaskListController
 
             ApiResponse<CreateTaskListResponseDTO> apiResponse = ApiResponse.success(response);
 
-            return ResponseEntity.status(201).body(apiResponse);
+            return ResponseEntity.status(201)
+                .body(apiResponse);
         } catch (Exception e) 
         {
             return ResponseEntity.status(500)
@@ -120,7 +121,6 @@ public class TaskListController
     {
         try 
         {
-
             TaskList updatedTaskList;
 
             // This handles the case where the task list is not found
