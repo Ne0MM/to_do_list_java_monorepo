@@ -127,7 +127,11 @@ public class TaskListController
             // or does not belong to the user
             try
             {
-                updatedTaskList = taskListService.updateTaskList(taskListId, data, appUser);
+                updatedTaskList = taskListService.updateTaskList(
+                    taskListId, 
+                    data, 
+                    appUser
+                );
             } catch (Exception e)
             {
                 return ResponseEntity.status(404)
@@ -140,7 +144,8 @@ public class TaskListController
 
             ApiResponse<UpdateTaskListReponseDTO> apiResponse = ApiResponse.success(response);
 
-            return ResponseEntity.status(200).body(apiResponse);
+            return ResponseEntity.status(200)
+                .body(apiResponse);
         } catch (Exception e)
         {
             return ResponseEntity.status(500)

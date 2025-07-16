@@ -3,6 +3,7 @@ package com.to_do_list_java.to_do_list_java.services;
 import org.springframework.stereotype.Service;
 
 import com.to_do_list_java.to_do_list_java.dtos.task.CreateTaskRequestDTO;
+import com.to_do_list_java.to_do_list_java.dtos.task.UpdateTaskRequestDTO;
 import com.to_do_list_java.to_do_list_java.models.AppUser;
 import com.to_do_list_java.to_do_list_java.models.Task;
 import com.to_do_list_java.to_do_list_java.models.TaskList;
@@ -61,6 +62,34 @@ public class TaskService {
         return newTask;
     }
 
+    @Transactional
+    public Task updateTask(
+        Long taskId,
+        AppUser appUser,
+        UpdateTaskRequestDTO data
+    )
+    {
+
+        Task task = taskRepository.findById(taskId)
+            .orElseThrow(() -> new IllegalArgumentException("Task not found"));
+
+        if (!task.getAppUserId().equals(appUser.getId())) 
+        {
+            throw new IllegalArgumentException("Task does not belong to the user");
+        }
+
+        updateTitle(task, data.title());
+        updateDescription(task, data.description());
+        updateIsCompleted(task, data.isCompleted());
+        updateIsActive(task, data.isInactive());
+
+        Task updatedTask = taskRepository.save(task);
+
+        refreshTask(updatedTask);
+
+        return updatedTask;
+    }
+
     // Ensure the entity is persisted and refreshed
     // This is necessary to retrieve the timestamp values correctly
     private void refreshTask(Task task) {
@@ -69,13 +98,54 @@ public class TaskService {
     }
 
     // Helper methods for updating fields with validation
+
+    private void updateTitle(
+        Task task, 
+        String title
+    ) 
+    {
+        if (title != null && !title.isBlank()) 
+        {
+            task.withTitle(title);
+        }
+    }
+
     private void updateDescription(
         Task task, 
         String description
     ) 
     {
-        if (description != null && !description.isBlank()) {
-            task.setDescription(description);
+        if (description != null)
+        {
+            if(!description.isBlank()) 
+            {
+                task.withDescription(description);
+            }else
+            {
+                task.withDescription(null);
+            }
+        } 
+    }
+
+    private void updateIsCompleted(
+        Task task, 
+        Boolean isCompleted
+    ) 
+    {
+        if (isCompleted != null) 
+        {
+            task.withIsCompleted(isCompleted);
+        }
+    }
+
+    private void updateIsActive(
+        Task task, 
+        Boolean isActive
+    ) 
+    {
+        if (isActive != null) 
+        {
+            task.withIsActive(isActive);
         }
     }
 
