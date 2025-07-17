@@ -1,5 +1,5 @@
 CREATE TABLE sub_tasks (
-    id BIGSERIAL PRIMARY KEY
+    id BIGSERIAL PRIMARY KEY,
     task_id BIGINT NOT NULL,
     app_user_id BIGINT NOT NULL,
     title VARCHAR(100) NOT NULL,

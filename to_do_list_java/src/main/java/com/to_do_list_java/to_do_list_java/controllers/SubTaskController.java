@@ -49,9 +49,9 @@ public class SubTaskController
                 appUser, 
                 data
             );
-        } catch (IllegalArgumentException e) 
+        } catch (Exception e) 
         {
-            return ResponseEntity.badRequest()
+            return ResponseEntity.status(404)
                 .body(ApiResponse.error(404, e.getMessage()));
         }
 
@@ -83,7 +83,7 @@ public class SubTaskController
             );
         } catch (IllegalArgumentException e) 
         {
-            return ResponseEntity.badRequest()
+            return ResponseEntity.status(404)
                 .body(ApiResponse.error(404, e.getMessage()));
         }
 
