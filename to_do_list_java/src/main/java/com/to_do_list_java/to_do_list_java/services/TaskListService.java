@@ -111,7 +111,10 @@ public class TaskListService
     }
 
     // Helper methods for updating fields with validation
-    private void updateTitle(TaskList taskList, String title) 
+    private void updateTitle(
+        TaskList taskList, 
+        String title
+    ) 
     {
         if (title != null && !title.isBlank()) 
         {
@@ -119,7 +122,10 @@ public class TaskListService
         }
     }
 
-    private void updateDescription(TaskList taskList, String description) 
+    private void updateDescription(
+        TaskList taskList, 
+        String description
+    ) 
     {
         if (description != null) 
         {
@@ -133,7 +139,10 @@ public class TaskListService
         } 
     }
 
-    private void updateActiveStatus(TaskList taskList, Boolean isActive) 
+    private void updateActiveStatus(
+        TaskList taskList, 
+        Boolean isActive
+    ) 
     {
         if (isActive != null) 
         {
@@ -141,7 +150,10 @@ public class TaskListService
         }
     }
 
-    private void updateCompletedStatus(TaskList taskList, Boolean isCompleted) 
+    private void updateCompletedStatus(
+        TaskList taskList, 
+        Boolean isCompleted
+    ) 
     {
         if (isCompleted != null) 
         {

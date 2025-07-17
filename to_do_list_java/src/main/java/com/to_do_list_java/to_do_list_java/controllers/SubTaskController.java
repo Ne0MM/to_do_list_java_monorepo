@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,6 +13,8 @@ import com.to_do_list_java.to_do_list_java.dtos.ApiResponse;
 import com.to_do_list_java.to_do_list_java.dtos.sub_task.CreateSubTaskRequestDTO;
 import com.to_do_list_java.to_do_list_java.dtos.sub_task.CreateSubTaskResponseDTO;
 import com.to_do_list_java.to_do_list_java.dtos.sub_task.SubTaskDTO;
+import com.to_do_list_java.to_do_list_java.dtos.sub_task.UpdateSubTaskRequestDTO;
+import com.to_do_list_java.to_do_list_java.dtos.sub_task.UpdateSubTaskResponseDTO;
 import com.to_do_list_java.to_do_list_java.models.AppUser;
 import com.to_do_list_java.to_do_list_java.models.SubTask;
 import com.to_do_list_java.to_do_list_java.services.SubTaskService;
@@ -60,6 +63,37 @@ public class SubTaskController
 
         return ResponseEntity.status(201)
             .body(apiResponse);
+    }
+
+    @PutMapping("/{subTaskId}")
+    public ResponseEntity<ApiResponse<UpdateSubTaskResponseDTO>> updateSubTask(
+        @PathVariable Long subTaskId,
+        @AuthenticationPrincipal AppUser appUser,
+        @Valid @RequestBody UpdateSubTaskRequestDTO data
+    ) 
+    {
+        SubTask subTask;
+
+        try
+        {
+            subTask = subTaskService.updateSubTask(
+                subTaskId, 
+                appUser, 
+                data
+            );
+        } catch (IllegalArgumentException e) 
+        {
+            return ResponseEntity.badRequest()
+                .body(ApiResponse.error(404, e.getMessage()));
+        }
+
+        SubTaskDTO subTaskDTO = SubTaskDTO.fromEntity(subTask);
+
+        UpdateSubTaskResponseDTO response = UpdateSubTaskResponseDTO.fromSubTaskDTO(subTaskDTO);
+
+        ApiResponse<UpdateSubTaskResponseDTO> apiResponse = ApiResponse.success(response);
+
+        return ResponseEntity.ok(apiResponse);
     }
 
 }
