@@ -49,7 +49,7 @@ public class SubTaskService
 
         SubTask subTask = new SubTask()
             .withAllRequiredField(
-                taskId,
+                task,
                 appUser,
                 data.title()
             );

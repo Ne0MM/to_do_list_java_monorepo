@@ -48,6 +48,29 @@ public class TaskListService
     }
 
     @Transactional
+    public TaskList getDetailedTaskList(
+        Long taskListId,
+        AppUser appUser
+    )
+    {
+
+        TaskList taskList = taskListRepository.findDetailedTaskList(taskListId, appUser.getId())
+            .orElseThrow(() -> new RuntimeException("Task list not found"));
+
+        if(!taskList.getAppUserId().equals(appUser.getId()))
+        {
+            throw new RuntimeException("You do not have permission to view this task list");
+        }
+
+        taskList.getTasks().forEach(task -> 
+        {
+            task.getSubTasks().size();
+        });
+
+        return taskList;
+    }
+
+    @Transactional
     public TaskList createTaskList(
         CreateTaskListRequestDTO data,
         AppUser appUser

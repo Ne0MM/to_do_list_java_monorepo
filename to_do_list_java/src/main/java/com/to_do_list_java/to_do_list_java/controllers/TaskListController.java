@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.to_do_list_java.to_do_list_java.dtos.ApiResponse;
 import com.to_do_list_java.to_do_list_java.dtos.task_list.CreateTaskListRequestDTO;
 import com.to_do_list_java.to_do_list_java.dtos.task_list.CreateTaskListResponseDTO;
+import com.to_do_list_java.to_do_list_java.dtos.task_list.DetailedTaskListDTO;
+import com.to_do_list_java.to_do_list_java.dtos.task_list.GetDetailedTaskListResponseDTO;
 import com.to_do_list_java.to_do_list_java.dtos.task_list.GetTaskListRequestDTO;
 import com.to_do_list_java.to_do_list_java.dtos.task_list.TaskListDTO;
 import com.to_do_list_java.to_do_list_java.dtos.task_list.UpdateTaskListReponseDTO;
@@ -84,6 +86,39 @@ public class TaskListController
         {
             return ResponseEntity.status(500)
                 .body(ApiResponse.error(500, "An error occurred while fetching inactive task lists"));
+        }
+    }
+
+    @GetMapping("/{taskListId}")
+    public ResponseEntity<ApiResponse<GetDetailedTaskListResponseDTO>> getDetailedTaskList(
+        @PathVariable Long taskListId,
+        @AuthenticationPrincipal AppUser appUser
+    )
+    {
+
+        try 
+        {
+            TaskList taskList;
+
+            try
+            {
+                taskList = taskListService.getDetailedTaskList(taskListId, appUser);
+            }catch (Exception e) 
+            {
+                return ResponseEntity.status(404)
+                    .body(ApiResponse.error(404, e.getMessage()));
+            }
+
+            DetailedTaskListDTO detailedTaskListDTO = DetailedTaskListDTO.fromEntity(taskList);
+
+            GetDetailedTaskListResponseDTO response = GetDetailedTaskListResponseDTO.fromDetailedTaskListDTO(detailedTaskListDTO);
+
+            return ResponseEntity.status(200)
+                .body(ApiResponse.success(response));
+        } catch (Exception e) 
+        {
+            return ResponseEntity.status(500)
+                .body(ApiResponse.error(500, "An error occurred while fetching all task lists"));
         }
     }
 

@@ -2,14 +2,17 @@ package com.to_do_list_java.to_do_list_java.models;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.List;
 
 import org.hibernate.annotations.ColumnDefault;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
@@ -63,6 +66,12 @@ public class TaskList
     )
     @ColumnDefault("CURRENT_TIMESTAMP")
     private OffsetDateTime updatedAt;
+
+    @OneToMany(
+        mappedBy = "taskList",
+        fetch = FetchType.LAZY
+    )
+    private List<Task> tasks;
 
     // Getters and Setters
     public TaskList()
@@ -155,5 +164,10 @@ public class TaskList
     public Boolean getIsActive() 
     {
         return isActive;
+    }
+
+    public List<Task> getTasks() 
+    {
+        return tasks;
     }
 }

@@ -1,12 +1,17 @@
 package com.to_do_list_java.to_do_list_java.models;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
@@ -18,11 +23,15 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(
-        name = "task_list_id", 
-        nullable = false
+    @ManyToOne
+    @JoinColumn(name = "task_list_id")
+    private TaskList taskList;
+
+    @OneToMany(
+        mappedBy = "task",
+        fetch = FetchType.LAZY
     )
-    private Long taskListId;
+    private List<SubTask> subTasks;
 
     @Column(
         name = "app_user_id",
@@ -72,9 +81,9 @@ public class Task {
     {
     }
 
-    public Task withTaskListId(Long taskListId) 
+    public Task withTaskList(TaskList taskList) 
     {
-        this.taskListId = taskListId;
+        this.taskList = taskList;
         return this;
     }
 
@@ -109,12 +118,12 @@ public class Task {
     }
 
     public Task withAllRequiredFields(
-        Long taskListId,
+        TaskList taskList,
         AppUser appUser,
         String title
     ) 
     {
-        return this.withTaskListId(taskListId)
+        return this.withTaskList(taskList)
                    .withAppUserId(appUser.getId())
                    .withTitle(title)
                    .withIsActive(true)
@@ -136,11 +145,7 @@ public class Task {
     }
 
     public Long getTaskListId() {
-        return taskListId;
-    }
-
-    public void setTaskListId(Long taskListId) {
-        this.taskListId = taskListId;
+        return taskList.getId();
     }
 
     public Long getAppUserId() {
@@ -181,6 +186,10 @@ public class Task {
 
     public void setIsActive(Boolean isActive) {
         this.isActive = isActive;
+    }
+
+    public List<SubTask> getSubTasks() {
+        return subTasks;
     }
 
 }

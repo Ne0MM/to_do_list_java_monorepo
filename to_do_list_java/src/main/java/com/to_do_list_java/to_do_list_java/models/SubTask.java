@@ -7,6 +7,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
@@ -19,11 +21,9 @@ public class SubTask
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(
-        name = "task_id", 
-        nullable = false
-    )
-    private Long taskId;
+    @ManyToOne
+    @JoinColumn(name = "task_id")
+    private Task task;
     
     @Column(
         name = "app_user_id", 
@@ -71,9 +71,9 @@ public class SubTask
     {
     }
 
-    public SubTask withTaskId(Long id) 
+    public SubTask withTask(Task task) 
     {
-        this.taskId = id;
+        this.task = task;
         return this;
     }
 
@@ -108,13 +108,13 @@ public class SubTask
     }
 
     public SubTask withAllRequiredField(
-        Long taskId,
+        Task task,
         AppUser appUser,
         String title
     )
     {
         return this
-            .withTaskId(taskId)
+            .withTask(task)
             .withAppUserId(appUser.getId())
             .withTitle(title)
             .withIsActive(true)
@@ -139,7 +139,7 @@ public class SubTask
 
     public Long getTaskId()
     {
-        return taskId;
+        return task.getId();
     }
 
     public Long getAppUserId() 

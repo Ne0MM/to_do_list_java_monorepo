@@ -43,12 +43,12 @@ public class TaskService {
         TaskList taskList = taskListRepository.findById(taskListId)
             .orElseThrow(() -> new IllegalArgumentException("TaskList not found"));
 
-        if(!taskList.getId().equals(appUser.getId())) {
+        if(!taskList.getAppUserId().equals(appUser.getId())) {
             throw new IllegalArgumentException("TaskList does not belong to the user");
         }
 
         Task task = new Task().withAllRequiredFields(
-            taskListId, 
+            taskList, 
             appUser, 
             data.title()
         );
