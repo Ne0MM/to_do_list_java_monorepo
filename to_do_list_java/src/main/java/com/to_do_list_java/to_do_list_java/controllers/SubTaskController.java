@@ -40,30 +40,36 @@ public class SubTaskController
         @Valid @RequestBody CreateSubTaskRequestDTO data
     ) 
     {
-        SubTask subTask;
+        try{
+            SubTask subTask;
 
-        try
+            try
+            {
+                subTask = subTaskService.createSubTask(
+                    taskId, 
+                    appUser, 
+                    data
+                );
+            } catch (Exception e) 
+            {
+                return ResponseEntity.status(404)
+                    .body(ApiResponse.error(404, e.getMessage()));
+            }
+
+            SubTaskDTO subTaskDTO = SubTaskDTO.fromEntity(subTask);
+
+            CreateSubTaskResponseDTO response = CreateSubTaskResponseDTO.fromSubTaskDTO(subTaskDTO);
+
+            ApiResponse<CreateSubTaskResponseDTO> apiResponse = ApiResponse.success(response);
+
+            return ResponseEntity.status(201)
+                .body(apiResponse);
+        }catch (Exception e)
         {
-            subTask = subTaskService.createSubTask(
-                taskId, 
-                appUser, 
-                data
-            );
-        } catch (Exception e) 
-        {
-            return ResponseEntity.status(404)
-                .body(ApiResponse.error(404, e.getMessage()));
+            return ResponseEntity.status(500)
+                .body(ApiResponse.error(500, "An error occurred while creating the sub-task."));
         }
-
-        SubTaskDTO subTaskDTO = SubTaskDTO.fromEntity(subTask);
-
-        CreateSubTaskResponseDTO response = CreateSubTaskResponseDTO.fromSubTaskDTO(subTaskDTO);
-
-        ApiResponse<CreateSubTaskResponseDTO> apiResponse = ApiResponse.success(response);
-
-        return ResponseEntity.status(201)
-            .body(apiResponse);
-    }
+  }
 
     @PutMapping("/{subTaskId}")
     public ResponseEntity<ApiResponse<UpdateSubTaskResponseDTO>> updateSubTask(
@@ -72,28 +78,35 @@ public class SubTaskController
         @Valid @RequestBody UpdateSubTaskRequestDTO data
     ) 
     {
-        SubTask subTask;
-
         try
         {
-            subTask = subTaskService.updateSubTask(
-                subTaskId, 
-                appUser, 
-                data
-            );
-        } catch (IllegalArgumentException e) 
+            SubTask subTask;
+
+            try
+            {
+                subTask = subTaskService.updateSubTask(
+                    subTaskId, 
+                    appUser, 
+                    data
+                );
+            } catch (IllegalArgumentException e) 
+            {
+                return ResponseEntity.status(404)
+                    .body(ApiResponse.error(404, e.getMessage()));
+            }
+
+            SubTaskDTO subTaskDTO = SubTaskDTO.fromEntity(subTask);
+
+            UpdateSubTaskResponseDTO response = UpdateSubTaskResponseDTO.fromSubTaskDTO(subTaskDTO);
+
+            ApiResponse<UpdateSubTaskResponseDTO> apiResponse = ApiResponse.success(response);
+
+            return ResponseEntity.ok(apiResponse);
+        } catch (Exception e)
         {
-            return ResponseEntity.status(404)
-                .body(ApiResponse.error(404, e.getMessage()));
+            return ResponseEntity.status(500)
+                .body(ApiResponse.error(500, "An error occurred while updating the sub-task."));
         }
-
-        SubTaskDTO subTaskDTO = SubTaskDTO.fromEntity(subTask);
-
-        UpdateSubTaskResponseDTO response = UpdateSubTaskResponseDTO.fromSubTaskDTO(subTaskDTO);
-
-        ApiResponse<UpdateSubTaskResponseDTO> apiResponse = ApiResponse.success(response);
-
-        return ResponseEntity.ok(apiResponse);
     }
 
 }

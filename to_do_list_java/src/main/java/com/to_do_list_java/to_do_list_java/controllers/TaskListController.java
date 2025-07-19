@@ -102,7 +102,10 @@ public class TaskListController
 
             try
             {
-                taskList = taskListService.getDetailedTaskList(taskListId, appUser);
+                taskList = taskListService.getDetailedTaskList(
+                    taskListId, 
+                    appUser
+                );
             }catch (Exception e) 
             {
                 return ResponseEntity.status(404)
@@ -130,7 +133,17 @@ public class TaskListController
     {
         try
         {
-            TaskList newTaskList = taskListService.createTaskList(data, appUser);
+
+            TaskList newTaskList;
+
+            try
+            {
+                newTaskList = taskListService.createTaskList(data, appUser);
+            } catch (Exception e)
+            {
+                return ResponseEntity.status(404)
+                    .body(ApiResponse.error(404, e.getMessage()));
+            }
 
             TaskListDTO taskListDTO = TaskListDTO.fromEntity(newTaskList);
 
