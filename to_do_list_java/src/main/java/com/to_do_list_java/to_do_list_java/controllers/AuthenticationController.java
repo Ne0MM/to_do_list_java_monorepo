@@ -93,7 +93,7 @@ public class AuthenticationController
         }catch (Exception e)
         {
             return ResponseEntity.internalServerError()
-                .body(ApiResponse.error(500, "An error occurred while creating the user"));
+                .body(ApiResponse.error(500, e.getMessage()));
         }
 
         // Authenticate the user after sign up to generate a token

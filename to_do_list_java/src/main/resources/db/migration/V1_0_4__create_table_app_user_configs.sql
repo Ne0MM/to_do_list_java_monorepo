@@ -1,0 +1,12 @@
+CREATE TABLE app_user_configs (
+    id BIGINT PRIMARY KEY,
+    theme VARCHAR(100) NOT NULL,
+    language TEXT NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_app_user_id
+        FOREIGN KEY (id)
+        REFERENCES app_users(id)
+        ON DELETE CASCADE
+);
