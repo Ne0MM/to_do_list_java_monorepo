@@ -97,7 +97,8 @@ public class AuthenticationController
         }
 
         // Authenticate the user after sign up to generate a token
-        try{
+        try
+        {
             var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
             var auth = this.authenticationManager.authenticate(usernamePassword);
 

@@ -98,4 +98,24 @@ public class AppUserConfig
             .withTheme("light")
             .withLanguage("en");
     }
+
+    public Long getId() 
+    {
+        return id;
+    }
+
+    public AppUser getAppUser() 
+    {
+        return appUser;
+    }
+
+    public String getTheme() 
+    {
+        return theme;
+    }
+
+    public String getLanguage() 
+    {
+        return language;
+    }
 }
