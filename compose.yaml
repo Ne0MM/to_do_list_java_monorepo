@@ -41,5 +41,16 @@ services:
     depends_on:
       db:
         condition: service_healthy
+  frontend:
+    container_name: to_do_list_next
+    build:
+      context: ./to_do_list_next
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    develop:
+      watch:
+        - path: ./to_do_list_next/src
+          action: sync+restart
 volumes:
   to_do_list_java_db:
