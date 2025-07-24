@@ -1,0 +1,22 @@
+# Estágio de desenvolvimento
+FROM node:22-alpine
+
+# Define o diretório de trabalho no contêiner
+WORKDIR /app
+
+# Copia package.json e o arquivo de lock para aproveitar o cache do Docker
+# Garanta que está usando o gerenciador de pacotes correto (npm ou yarn)
+COPY package.json package-lock.json* ./
+
+# Instala as dependências
+RUN npm install
+
+# Copia o resto do código do seu aplicativo
+# Isso será sincronizado com as alterações locais pelo docker-compose.yml
+COPY . .
+
+# Expõe a porta que o Next.js usa para o desenvolvimento
+EXPOSE 3000
+
+# O comando para iniciar o servidor de desenvolvimento
+CMD ["npm", "run", "dev"]

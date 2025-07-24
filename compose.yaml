@@ -45,12 +45,15 @@ services:
     container_name: to_do_list_next
     build:
       context: ./to_do_list_next
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     ports:
       - "3000:3000"
     develop:
       watch:
-        - path: ./to_do_list_next/src
-          action: sync+restart
+        - path: ./to_do_list_next
+          action: sync
+          target: /app
+          ignore:
+            - node_modules/
 volumes:
   to_do_list_java_db:
